@@ -1,0 +1,4 @@
+<Alloy>
+	<Window id="mapwin" title="L('maptitle')">
+	</Window>
+</Alloy>

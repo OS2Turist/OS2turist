@@ -1,8 +1,8 @@
-#appname: turistportalen
-#publisher: CB
-#url: http://www.bellcom.dk
-#image: appicon.png
-#appid: dk.bellcom.turistportalen
-#desc: undefined
-#type: ipad
-#guid: 3af4136c-7a97-415a-b04e-ed329f7a7b47
+#appname:turistportalen
+#publisher:Bellcom
+#url:http://www.bellcom.dk
+#image:appicon.png
+#appid:dk.bellcom.turistportalen
+#desc:undefined
+#type:ipad
+#guid:3af4136c-7a97-415a-b04e-ed329f7a7b47

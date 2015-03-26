@@ -1,0 +1,7 @@
+<Alloy>
+	<Window title="L('profiletitle')">
+		<View>
+			<Label>Profile</Label>
+		</View>
+	</Window>
+</Alloy>

@@ -2,10 +2,10 @@
 <ti:app xmlns:ti="http://ti.appcelerator.org">
     <id>dk.bellcom.turistportalen</id>
     <name>turistportalen</name>
-    <version>1.0</version>
-    <publisher>CB</publisher>
+    <version>0.0.1</version>
+    <publisher>Bellcom</publisher>
     <url>http://www.bellcom.dk</url>
-    <description/>
+    <description>undefined</description>
     <copyright>2015 by CB</copyright>
     <icon>appicon.png</icon>
     <fullscreen>false</fullscreen>
@@ -47,7 +47,10 @@
         </splash>
         <theme>default</theme>
     </mobileweb>
-    <modules/>
+    <modules>
+        <module platform="iphone">ti.map</module>
+        <module platform="android">ti.map</module>
+    </modules>
     <deployment-targets>
         <target device="android">true</target>
         <target device="blackberry">false</target>

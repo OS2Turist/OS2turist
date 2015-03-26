@@ -1,0 +1,19 @@
+"Window": {
+	backgroundColor:"#fff",
+	orientationModes: [
+		Titanium.UI.LANDSCAPE_LEFT,
+		Titanium.UI.LANDSCAPE_RIGHT,
+		Titanium.UI.PORTRAIT
+	],
+},
+".topcontainer": {
+	top:20
+},
+"Label": {
+	width: Ti.UI.SIZE,
+	height: Ti.UI.SIZE,
+	color: "#000",
+	font: {
+		fontSize: 12
+	}
+}

@@ -1,0 +1,7 @@
+<Alloy>
+	<Window title="L('listtitle')">
+		<View>
+			<Label>List</Label>
+		</View>
+	</Window>
+</Alloy>

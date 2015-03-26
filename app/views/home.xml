@@ -1,0 +1,7 @@
+<Alloy>
+	<Window title="L('hometitle')">
+		<View class="topcontainer">
+			<Label>Home</Label>
+		</View>
+	</Window>
+</Alloy>

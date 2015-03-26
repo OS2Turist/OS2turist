@@ -1,0 +1,12 @@
+<resources>
+	<string name="hometab">Home</string>
+	<string name="profiletab">Profile</string>
+	<string name="listtab">List</string>
+	<string name="maptab">Map</string>
+	
+	<string name="hometitle">Home</string>
+	<string name="profiletitle">Profile</string>
+	<string name="listtitle">List</string>
+	<string name="maptitle">Map</string>
+
+</resources>
