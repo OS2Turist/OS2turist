@@ -1,7 +1,7 @@
 <Alloy>
 	<Window title="L('hometitle')">
 		<View class="topcontainer">
-			<Label>Home</Label>
+			<Label>Bobler her (Discovery)</Label>
 		</View>
 	</Window>
 </Alloy>
