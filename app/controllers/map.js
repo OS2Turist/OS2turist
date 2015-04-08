@@ -55,11 +55,6 @@ function doFocus(e){
 
 
 
-// Add the map to the window
-$.mapwin.add(mapview);
-
-mapview.add(centerButton);
-// Load the locations and events
 
 
 
@@ -67,5 +62,9 @@ mapview.add(centerButton);
 
 
 (function(){
-	
+	// Add the map to the window
+	$.mapwin.add(mapview);
+
+	mapview.add(centerButton);
+	// Load the locations and events
 })();

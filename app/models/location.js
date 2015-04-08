@@ -25,6 +25,10 @@ exports.definition = {
 	extendCollection: function(Collection) {
 		_.extend(Collection.prototype, {
 			// extended functions and properties go here
+			// load data from the service here on regular intervals
+			loadFromService: function(){
+				
+			}
 		});
 
 		return Collection;
