@@ -1,4 +1,6 @@
 
-".container" : {
-  
+"#lblKmSetting" : {
+	font: {
+		fontSize: 12
+	}  
 }
