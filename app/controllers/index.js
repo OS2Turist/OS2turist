@@ -1,30 +1,39 @@
-var url = "";
+var Drupal = require('drupal');
 
 function loadData(){
+	var drupal = new Drupal();
+	drupal.setRestPath("http://os2turist.bellcom.dk/", "da/app/content/get");
+	drupal.systemConnect(
+	    //success
+	    function(sessionData) {
+	        var uid = sessionData.user.uid;
+	        console.log('session found for user '+uid);
+	    },
+	    //failure
+	    function(error) {
+	        console.log('boo :(');
+	    }
+	);
 
-	var client = Ti.Network.createHTTPClient({
-	     // function called when the response data is available
-	     onload : function(e) {
-	         Ti.API.info("Received text: " + this.responseText);
-	         alert('success');
-	     },
-	     // function called when an error occurs, including a timeout
-	     onerror : function(e) {
-	         Ti.API.debug(e.error);
-	         alert('error');
-	     },
-	     timeout : 5000  // in milliseconds
-	});
 	// Set credentials here
-	client.username = "";
-	client.password = "";
+	var name = "app";
+	var pass = "app";
 	
-	// Prepare the connection.
-	client.open("GET", url);
-	// Send the request.
-	client.send();
+	var userObject;
+
+	drupal.login(name, pass,
+	    function(userData) {
+	        console.log('User ' + userData.uid + ' has logged in.');
+	        userObject = userData;
+	    },
+	    function(err){
+	        console.log('login failed.');
+	    }
+	);
+	
 	
 }
+
 
 (function(){
 	//loadData();

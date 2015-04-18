@@ -2,16 +2,19 @@ exports.definition = {
 	config: {
 		columns: {
 		    "id": "INTEGER PRIMARY KEY AUTOINCREMENT",
-		    "remoteid": "int",
-		    "name": "text",
-		    "description": "text",
-		    "iconpath": "text",
+		    "vid": "int",
+		    "language": "text",
+		    "title": "text",
+		    "subtitle": "text",
+		    "from": "int",
+		    "to": "int",
 		    "latitude": "text",
-		    "longitude": "text"
+		    "longitude": "text",
+		    "image": "blob" 
 		},
 		adapter: {
 			type: "sql",
-			collection_name: "location",
+			collection_name: "events",
 			idAttribute: "id"
 		}
 	},
