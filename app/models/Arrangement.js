@@ -1,26 +1,28 @@
 exports.definition = {
 	config: {
 		columns: {
-		    "id": "INTEGER PRIMARY KEY AUTOINCREMENT",
-		    "vid": "int",
+			"id": "INTEGER PRIMARY KEY AUTOINCREMENT",
+		    "vid": "integer",
 		    "language": "text",
 		    "title": "text",
 		    "subtitle": "text",
-		    "from": "int",
-		    "to": "int",
+		    "from_date": "integer",
+		    "to_date": "integer",
 		    "latitude": "text",
 		    "longitude": "text",
-		    "image": "blob" 
+		    "imageuri": "text",
+		    "image": "blob"
 		},
 		adapter: {
 			type: "sql",
-			collection_name: "events",
+			collection_name: "Arrangement",
 			idAttribute: "id"
 		}
 	},
 	extendModel: function(Model) {
 		_.extend(Model.prototype, {
 			// extended functions and properties go here
+			
 		});
 
 		return Model;
@@ -28,9 +30,15 @@ exports.definition = {
 	extendCollection: function(Collection) {
 		_.extend(Collection.prototype, {
 			// extended functions and properties go here
-			// load data from the service here on regular intervals
-			loadFromService: function(){
-				
+			exists: function(vid, language){
+				var collection = this;
+				var result = collection.where({vid: parseInt(vid), language: language});
+				Ti.API.info("WTF? " + result + "  " + result.length);
+				if(result.length > 0){
+					return true;
+				}else{
+					return false;	
+				}
 			}
 		});
 
