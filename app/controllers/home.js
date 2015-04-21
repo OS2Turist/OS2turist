@@ -85,7 +85,7 @@ function dataTest(e){
 
 function processJSON(json_obj){
     var loc, newevent, image_uri, date_from, date_to, datepart, res;
-    var arrangementer = Alloy.createCollection("Arrangement");
+    var arrangementer = Alloy.Collections.instance("Arrangement");
     var table = arrangementer.config.adapter.collection_name;
     arrangementer.fetch();
     $.lblCount.text = arrangementer.length;
@@ -108,16 +108,7 @@ function processJSON(json_obj){
 	    				image: null  // TODO need to figure out how to best load these, maybe loaded and added when first displayed?
     				});
     				
-    				
-    				//newevent.save();
-    				//arrangementer.add(newevent);
-					Ti.API.info(JSON.stringify(newevent));
-    				
-    				//arrangementer.fetch({query:'select * from ' +table + ' where nid='+ obj.nid + ' and language="' + node.language + '"'});
-    				//Ti.API.info(result);
-    				/*
    					var res_arr = arrangementer.where({nid: parseInt(obj.nid), language: node.language});
-   					
 					if(res_arr.length === 0){
 	    				newevent.save();
 	    				arrangementer.add(newevent);
@@ -126,7 +117,6 @@ function processJSON(json_obj){
 						newevent.set({id: res_arr[0].get("id")});
 						newevent.save();
 					}						
-					*/	
 					// TODO get delete directive from the server and handle delete operation
 				});
     		}

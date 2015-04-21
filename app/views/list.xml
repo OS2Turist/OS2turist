@@ -1,7 +1,22 @@
 <Alloy>
 	<Window title="L('listtitle')">
-		<View>
-			<Label>List</Label>
-		</View>
+		<ScrollView>
+			<ListView id="lvEvents" defaultItemTemplate="template" onItemclick="doItemclick">
+				<Templates>
+					<ItemTemplate name="template">
+						<View layout="horizontal" height="68dp" bindId="rowView">
+							<Label class="itemlabel" bindId="title" id="title" />
+							<Label class="itemlabel" bindId="subtitle" id="subtitle" />
+						</View>
+					</ItemTemplate>
+				</Templates>
+				<ListSection />
+				<PullView>
+					<View>
+						<Label>Hjælpe tekst her, eller 'release to update'?</Label>
+					</View>
+				</PullView>
+			</ListView>		
+		</ScrollView>
 	</Window>
 </Alloy>
