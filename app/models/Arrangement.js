@@ -2,7 +2,7 @@ exports.definition = {
 	config: {
 		columns: {
 			"id": "INTEGER PRIMARY KEY AUTOINCREMENT",
-		    "vid": "integer",
+		    "nid": "integer",
 		    "language": "text",
 		    "title": "text",
 		    "subtitle": "text",
@@ -12,6 +12,18 @@ exports.definition = {
 		    "longitude": "text",
 		    "imageuri": "text",
 		    "image": "blob"
+		},
+		defaults: {
+			nid: 0,
+			language: "",
+			title: "",
+			subtitle: "",
+			from_date: 0,
+			from_date: 0,
+			latitude: "",
+			longitude: "",
+			imageuri: "",
+			image: null
 		},
 		adapter: {
 			type: "sql",
@@ -30,16 +42,6 @@ exports.definition = {
 	extendCollection: function(Collection) {
 		_.extend(Collection.prototype, {
 			// extended functions and properties go here
-			exists: function(vid, language){
-				var collection = this;
-				var result = collection.where({vid: parseInt(vid), language: language});
-				Ti.API.info("WTF? " + result + "  " + result.length);
-				if(result.length > 0){
-					return true;
-				}else{
-					return false;	
-				}
-			}
 		});
 
 		return Collection;

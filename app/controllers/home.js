@@ -1,3 +1,4 @@
+var Drupal = require('drupal');
 var args = arguments[0] || {};
 
 function doChangeKm(e){
@@ -25,6 +26,40 @@ function getAndFormatDate(datenode){
 	return date_from;
 }
 
+function loadData(){
+	var drupal = new Drupal();
+	drupal.setRestPath("http://os2turist.bellcom.dk/", "da/app/content/get");
+	drupal.systemConnect(
+	    //success
+	    function(sessionData) {
+	        var uid = sessionData.user.uid;
+	        console.log('session found for user '+uid);
+	    },
+	    //failure
+	    function(error) {
+	        console.log('boo :(');
+	    }
+	);
+
+	// Set credentials here
+	var name = "app";
+	var pass = "app";
+	
+	var userObject;
+
+	drupal.login(name, pass,
+	    function(userData) {
+	        console.log('User ' + userData.uid + ' has logged in.');
+	        userObject = userData;
+	    },
+	    function(err){
+	        console.log('login failed.');
+	    }
+	);
+	
+	
+}
+
 function readLocalData(){
 	var filename = "datadump.json";
 	var file = Titanium.Filesystem.getFile(Titanium.Filesystem.resourcesDirectory, filename);
@@ -37,16 +72,31 @@ function readLocalData(){
     return json_obj;
 }
 
+function dataTest(e){
+	var arrangementer = Alloy.createCollection("Arrangement");
+    var table = arrangementer.config.adapter.collection_name;
+    arrangementer.fetch();
+    $.lblData.text = arrangementer.length;
+    arrangementer.each(function(mod){
+    	Ti.API.info("Model: " + mod.get("nid"));
+    });
+
+}
+
 function processJSON(json_obj){
     var loc, newevent, image_uri, date_from, date_to, datepart, res;
-    Alloy.Collections.instance("Arrangement").fetch();
+    var arrangementer = Alloy.createCollection("Arrangement");
+    var table = arrangementer.config.adapter.collection_name;
+    arrangementer.fetch();
+    $.lblCount.text = arrangementer.length;
     _.each(json_obj, function(obj){
     	loc = obj.location;
     	if(loc){     // import the events that has a location
     		if(loc.latitude && (loc.latitude != "0.000000")){
 				_.each(obj.translations.data, function(node){
 					newevent = Alloy.createModel("Arrangement",{
-	    				vid: obj.vid,
+						id: null,
+	    				nid: obj.nid,
 	    				language: node.language,
 	    				title: obj.title_field[node.language][0].safe_value,
 	    				subtitle: obj.field_subtitle[node.language][0].safe_value,
@@ -59,21 +109,24 @@ function processJSON(json_obj){
     				});
     				
     				
-    				newevent.save({success: function(e){Ti.API.info("Save succeeded");}, error: function(e){Ti.API.info("Save failed");}});
-    				Alloy.Collections.instance("Arrangement").add(newevent);
+    				//newevent.save();
+    				//arrangementer.add(newevent);
+					Ti.API.info(JSON.stringify(newevent));
+    				
+    				//arrangementer.fetch({query:'select * from ' +table + ' where nid='+ obj.nid + ' and language="' + node.language + '"'});
+    				//Ti.API.info(result);
     				/*
-					if(Alloy.Collections.instance("Arrangement").exists(obj.vid, node.language)){
-						// Found, update
-						res.set(newevent);
-						res.save();
-						//Ti.API.info("UPDATED(maybe) " + obj.vid);
+   					var res_arr = arrangementer.where({nid: parseInt(obj.nid), language: node.language});
+   					
+					if(res_arr.length === 0){
+	    				newevent.save();
+	    				arrangementer.add(newevent);
 					}else{
-						// Not found, create
-						
-						
-						//Ti.API.info("CREATED " + obj.vid);
-					}
-					*/
+						// Found, update
+						newevent.set({id: res_arr[0].get("id")});
+						newevent.save();
+					}						
+					*/	
 					// TODO get delete directive from the server and handle delete operation
 				});
     		}
