@@ -10,6 +10,7 @@ exports.definition = {
 		    "to_date": "integer",
 		    "latitude": "text",
 		    "longitude": "text",
+		    "distance" : "integer",
 		    "imageuri": "text",
 		    "image": "blob"
 		},
@@ -22,6 +23,7 @@ exports.definition = {
 			from_date: 0,
 			latitude: "",
 			longitude: "",
+			distance: 0,
 			imageuri: "",
 			image: null
 		},
@@ -34,7 +36,6 @@ exports.definition = {
 	extendModel: function(Model) {
 		_.extend(Model.prototype, {
 			// extended functions and properties go here
-			
 		});
 
 		return Model;
@@ -42,6 +43,13 @@ exports.definition = {
 	extendCollection: function(Collection) {
 		_.extend(Collection.prototype, {
 			// extended functions and properties go here
+			fetchForCurrentLanguage : function(){
+				var table = this.config.adapter.collection_name;
+				return this.fetch({query:'SELECT * from ' + table + ' where language="' + Ti.Locale.currentLanguage + '"'});
+			}
+			// TODO fetch for date range and language
+			
+			// TODO implement sorting
 		});
 
 		return Collection;

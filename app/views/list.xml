@@ -6,7 +6,6 @@
 					<ItemTemplate name="template">
 						<View layout="horizontal" height="68dp" bindId="rowView">
 							<Label class="itemlabel" bindId="title" id="title" />
-							<Label class="itemlabel" bindId="subtitle" id="subtitle" />
 						</View>
 					</ItemTemplate>
 				</Templates>

@@ -1,6 +1,8 @@
 var Drupal = require('drupal');
 var args = arguments[0] || {};
 
+// TODO refactor the data processing, it needs to go into the model
+
 function doChangeKm(e){
 	$.lblKmSetting.text = String.format("%d", e.value) + " KM";
 	$.win.title = L('hometitle') + " " + String.format("%d", e.value) + " KM";
@@ -56,8 +58,6 @@ function loadData(){
 	        console.log('login failed.');
 	    }
 	);
-	
-	
 }
 
 function readLocalData(){
@@ -104,6 +104,7 @@ function processJSON(json_obj){
 	    				to_date: getAndFormatDate(obj.field_show_to),
 	    				latitude: obj.locations[0].latitude,
 	    				longitude: obj.locations[0].longitude,
+	    				distance: 0,
     					imageuri: getImageUri(obj),	
 	    				image: null  // TODO need to figure out how to best load these, maybe loaded and added when first displayed?
     				});
