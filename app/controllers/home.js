@@ -90,9 +90,8 @@ function processJSON(json_obj){
     arrangementer.fetch();
     $.lblCount.text = arrangementer.length;
     _.each(json_obj, function(obj){
-    	loc = obj.location;
-    	if(loc){     // import the events that has a location
-    		if(loc.latitude && (loc.latitude != "0.000000")){
+    	if(obj.location){     // import the events that has a location
+    		if(obj.location.latitude && (obj.location.latitude != "0.000000")){
 				_.each(obj.translations.data, function(node){
 					newevent = Alloy.createModel("Arrangement",{
 						id: null,
@@ -121,8 +120,16 @@ function processJSON(json_obj){
 					// TODO get delete directive from the server and handle delete operation
 				});
     		}
+    		
     	}
+    	
     });
+    if(json_obj.info){
+    	// grap the timestamp from info and clean up using the nid list
+    	Ti.App.Properties.setString("latestBackendTimestamp", json_obj.info.timestamp);
+    	// Now the delete operation to clean up old events
+    	arrangementer.cleanUpAndSync(json_obj.info.nids);
+    }
 }
 
 function doTest(e){

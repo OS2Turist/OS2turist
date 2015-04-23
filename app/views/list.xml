@@ -4,8 +4,9 @@
 			<ListView id="lvEvents" defaultItemTemplate="template" onItemclick="doItemclick">
 				<Templates>
 					<ItemTemplate name="template">
-						<View layout="horizontal" height="68dp" bindId="rowView">
+						<View layout="vertical" height="68dp" bindId="rowView">
 							<Label class="itemlabel" bindId="title" id="title" />
+							<Label class="distancelabel" bindId="distance" id="distance"/>
 						</View>
 					</ItemTemplate>
 				</Templates>

@@ -1,4 +1,3 @@
-var Map = require('ti.map');
 var geolib = require("geolib");
 var args = arguments[0] || {};
 var arrangementer = Alloy.Collections.instance("Arrangement");
@@ -14,35 +13,27 @@ function doItemclick(e){
 var curpos = {latitude: 55.49015426635742, longitude: 9.47851276397705};
 
 function loadEventList(){
-	
-	
-	
-	// use a simple query
-	arrangementer.fetchForCurrentLanguage();
-	arrangementer.setSortField("title", "DESC");
-	arrangementer.sort();
-	
-	
-	
-	
-	var arr = [];
-	var prop = {};
-	var col = {};
-
+	arrangementer.fetchForCurrentLanguage(curpos);
 	arrangementer.each(function(arrangement){
-		
-		prop = {height: Ti.UI.SIZE, backgroundColor: "#FFF", accessoryType: Ti.UI.LIST_ACCESSORY_TYPE_DETAIL};
-		
 		var dist = geolib.getDistance(
 	    	{latitude: parseFloat(arrangement.get("latitude")), longitude: parseFloat(arrangement.get("longitude"))},
 	    	curpos
 		);
-		Ti.API.info(arrangement.get("id") + " " + dist);
-		
+		arrangement.set({distance: dist});
+	});
+	arrangementer.setSortField("distance", "ASC");
+	arrangementer.sort();
+	
+	var arr = [];
+	var prop = {};
+	var col = {};
+	arrangementer.each(function(arrangement){
+		prop = {height: Ti.UI.SIZE, backgroundColor: "#FFF", accessoryType: Ti.UI.LIST_ACCESSORY_TYPE_DETAIL};
 		arr.push({ 
 			properties: prop,
 			rowView: {model: arrangement.get("id")},
-			title: {text: arrangement.get("title"), color: "#000"}
+			title: {text: arrangement.get("title"), color: "#000"},
+			distance: {text: arrangement.get("distance"), color: '#000'}
 			
 			//subtitle: {text: arrangement.get("subtitle"), color: "#000"}	
 		});
