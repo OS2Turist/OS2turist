@@ -19,6 +19,10 @@ function loadEventList(){
 	
 	// use a simple query
 	arrangementer.fetchForCurrentLanguage();
+	arrangementer.setSortField("title", "DESC");
+	arrangementer.sort();
+	
+	
 	
 	
 	var arr = [];
