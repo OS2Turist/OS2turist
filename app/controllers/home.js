@@ -29,35 +29,24 @@ function getAndFormatDate(datenode){
 }
 
 function loadData(){
+	
 	var drupal = new Drupal();
-	drupal.setRestPath("http://os2turist.bellcom.dk/", "da/app/content/get");
+
+	drupal.setRestPath("http://os2turist.bellcom.dk/", "app");
+	
 	drupal.systemConnect(
 	    //success
 	    function(sessionData) {
 	        var uid = sessionData.user.uid;
-	        console.log('session found for user '+uid);
+	        Ti.API.info('session found for user '+uid);
 	    },
 	    //failure
 	    function(error) {
-	        console.log('boo :(');
+	    	Ti.API.info(error);
+	        Ti.API.info('boo :(');
 	    }
 	);
 
-	// Set credentials here
-	var name = "app";
-	var pass = "app";
-	
-	var userObject;
-
-	drupal.login(name, pass,
-	    function(userData) {
-	        console.log('User ' + userData.uid + ' has logged in.');
-	        userObject = userData;
-	    },
-	    function(err){
-	        console.log('login failed.');
-	    }
-	);
 }
 
 function readLocalData(){
@@ -137,6 +126,9 @@ function doTest(e){
 	processJSON(data);
 }
 
+function doServiceTest(e){
+	loadData();
+}
 
 (function(){
 	doChangeKm($.sldKmSetting);	
