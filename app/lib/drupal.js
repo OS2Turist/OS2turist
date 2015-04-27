@@ -135,11 +135,11 @@ Drupal.prototype.getCsrfToken = function (success, failure) {
 
     xhr.onload = function () {
         Settings.setString(self.settingsPrefix + "X-CSRF-Token", xhr.responseText);
-        console.log('got new CSRF token ' + xhr.responseText);
+        Ti.API.info('got new CSRF token ' + xhr.responseText);
         success(xhr.responseText);
     };
     xhr.onerror = function (err) {
-        console.log("error getting CSRF token:");
+        Ti.API.info("error getting CSRF token:");
         failure(err);
     };
 
@@ -166,7 +166,7 @@ Drupal.prototype.systemConnect = function (success, failure) {
     // if session exists, token will be required
     var token = Settings.getString(this.settingsPrefix + "X-CSRF-Token");
     if (!token) {
-        console.log("will request token before systemConnect");
+        Ti.API.info("will request token before systemConnect");
         self.getCsrfToken(
             function () {
                 self.systemConnect(success, failure);
@@ -177,13 +177,13 @@ Drupal.prototype.systemConnect = function (success, failure) {
         );
         return;
     } else {
-        console.log("will systemConnect with token "+token);
+        Ti.API.info("will systemConnect with token "+token);
     }
 
     var xhr = createHTTPClient(),
         url = this.REST_PATH + 'system/connect';
 
-    console.log("POSTing to url " + url);
+    Ti.API.info("POSTing to url " + url);
 
     xhr.open("POST", url);
     xhr = this.setupCredentials(xhr);
@@ -205,7 +205,7 @@ Drupal.prototype.systemConnect = function (success, failure) {
 
             success(responseData);
         } else {
-            console.log("systemConnect error with " + xhr.status);
+            Ti.API.info("systemConnect error with " + xhr.status);
             
             if (xhr.status == 401) {
                 // token error - get a new one and try again
@@ -216,15 +216,15 @@ Drupal.prototype.systemConnect = function (success, failure) {
                 return;
             }
             
-            console.log(xhr.getAllResponseHeaders());
-            console.log(xhr.responseText);
+            Ti.API.info(xhr.getAllResponseHeaders());
+            Ti.API.info(xhr.responseText);
             failure(xhr.responseText);
         }
         
     };
     xhr.onerror = function (e) {
-        console.log("There was an error calling systemConnect: ");
-        console.log(e);
+        Ti.API.info("There was an error calling systemConnect: ");
+        Ti.API.info(e);
 
         // since systemConnect failed, will need a new csrf and session
         Settings.setString(self.settingsPrefix + "X-CSRF-Token", null);
@@ -259,10 +259,11 @@ Drupal.prototype.systemConnect = function (success, failure) {
  *
  *     contentType: String to send as "Content-Type" HTTP header
  *
- *     trace (boolean): If true, echo the request summary with console.log()
+ *     trace (boolean): If true, echo the request summary with Ti.API.info()
  */
 Drupal.prototype.makeRequest = function (config, success, failure, headers) {
 
+	Ti.API.info("makeRequest calling: " + config.servicePath);
     var trace = "makeRequest()\n",
         url = this.REST_PATH + config.servicePath,
         xhr = createHTTPClient();
@@ -279,11 +280,11 @@ Drupal.prototype.makeRequest = function (config, success, failure, headers) {
 
     xhr.onerror = function (e) {
 
-        console.log(JSON.stringify(e));
+        Ti.API.info(JSON.stringify(e));
 
-        console.log('FAILED REQUEST:');
-        console.log(trace);
-        console.log(config.params);
+        Ti.API.info('FAILED REQUEST:');
+        Ti.API.info(trace);
+        Ti.API.info(config.params);
 
         failure(e);
     };
@@ -296,7 +297,7 @@ Drupal.prototype.makeRequest = function (config, success, failure, headers) {
             success(responseData);
 
         } else {
-            console.log('makeRequest returned with status ' + xhr.status);
+            Ti.API.info('makeRequest returned with status ' + xhr.status);
             failure(xhr.responseText);
         }
     };
@@ -320,8 +321,8 @@ Drupal.prototype.makeRequest = function (config, success, failure, headers) {
 
     // optionally output a summary of the request
     if (config.trace) {
-        console.log(trace);
-        console.log(config.params);
+        Ti.API.info(trace);
+        Ti.API.info(config.params);
     }
 
     if (config.contentType && config.contentType.replace('application/x-www-form-urlencoded', '') != config.contentType) {
@@ -360,7 +361,7 @@ Drupal.prototype.makeAuthenticatedRequest = function (config, success, failure, 
  */
 Drupal.prototype.createAccount = function (user, success, failure, headers) {
 
-    console.log('Registering new user: ' + JSON.stringify(user) + " with cookie " + Settings.getString(this.settingsPrefix + "Drupal-Cookie"));
+    Ti.API.info('Registering new user: ' + JSON.stringify(user) + " with cookie " + Settings.getString(this.settingsPrefix + "Drupal-Cookie"));
 
     this.makeAuthenticatedRequest({
             httpMethod:'POST',
@@ -370,12 +371,12 @@ Drupal.prototype.createAccount = function (user, success, failure, headers) {
         },
         //success
         function (responseData) {
-            console.log('registerNewUser SUCCESS');
+            Ti.API.info('registerNewUser SUCCESS');
             success(responseData);
         },
         //fail
         function (err) {
-            console.log('registerNewUser FAIL');
+            Ti.API.info('registerNewUser FAIL');
             failure(err);
         },
         headers
@@ -402,13 +403,14 @@ Drupal.prototype.login = function (username, password, success, failure, headers
         },
         function (responseData) {
 
+			Ti.API.info("Drupal.prototype.login: " + responseData);
             var cookie = responseData.session_name + '=' + responseData.sessid;
             Settings.setString(self.settingsPrefix + "Drupal-Cookie", cookie);
-            console.log('login saving new cookie ' + cookie);
+            Ti.API.info('login saving new cookie ' + cookie);
 
             // store new token for this session
             Settings.setString(self.settingsPrefix + "X-CSRF-Token", responseData.token);
-            console.log('login saving new token ' + responseData.token);
+            Ti.API.info('login saving new token ' + responseData.token);
 
             success(responseData.user);
 
@@ -476,6 +478,13 @@ Drupal.prototype.getResource = function (resourceName, args, success, failure, h
     }, success, failure, headers);
 };
 
+Drupal.prototype.getResourceNoExtention = function (resourceName, args, success, failure, headers) {
+    this.makeAuthenticatedRequest({
+        servicePath:resourceName + "/" + this.encodeUrlString(args),
+        httpMethod:'GET'
+    }, success, failure, headers);
+};
+
 /**
  * Convenience function for POST requests
  */
@@ -525,7 +534,7 @@ Drupal.prototype.createNode = function (node, success, failure) {
         }, function (response) {
             success(response);
         }, function (response) {
-            console.log(JSON.stringify(response));
+            Ti.API.info("Drupal.prototype.createNode: " + JSON.stringify(response));
             failure(response);
         }
     );

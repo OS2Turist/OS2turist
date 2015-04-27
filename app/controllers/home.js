@@ -8,15 +8,6 @@ function doChangeKm(e){
 	$.win.title = L('hometitle') + " " + String.format("%d", e.value) + " KM";
 }
 
-function getImageUri(obj){
-	var image_uri = "";
-	if(obj.field_offer_images.und){
-		if(obj.field_offer_images.und.length > 0){
-			image_uri: obj.field_offer_images.und[0].uri;
-		}
-	}
-	return image_uri;
-}
 
 function getAndFormatDate(datenode){
 	date_from = null;
@@ -31,21 +22,41 @@ function getAndFormatDate(datenode){
 function loadData(){
 	
 	var drupal = new Drupal();
+	
+	var user = {
+            name: "app",
+            pass: "app"
+        };
 
 	drupal.setRestPath("http://os2turist.bellcom.dk/", "app");
 	
-	drupal.systemConnect(
-	    //success
-	    function(sessionData) {
-	        var uid = sessionData.user.uid;
-	        Ti.API.info('session found for user '+uid);
+	var userObject;
+
+	drupal.login(user.name, user.pass,
+	    function(userData) {
+	        Ti.API.info('User ' + userData.uid + ' has logged in.');
+	        userObject = userData;
+	        // Lets fetch the data
+	        var latestBackendTimestamp = "";
+	        /*
+	        if(Ti.App.Properties.hasProperty("latestBackendTimestamp")){
+	        	latestBackendTimestamp = Ti.App.Properties.getString("latestBackendTimestamp");
+	        }
+	        */ 
+	        drupal.getResourceNoExtention("content/get", latestBackendTimestamp,
+		        function(responseData){
+		        	Ti.API.info("success" + JSON.stringify(responseData));
+		        },
+		        function(err){
+		        	Ti.API.info("failed" + JSON.stringify(err));
+		        }); //resourceName, args, success, failure, headers;
 	    },
-	    //failure
-	    function(error) {
-	    	Ti.API.info(error);
-	        Ti.API.info('boo :(');
+	    function(err){
+	        Ti.API.info('login failed.' + JSON.stringify(err));
 	    }
 	);
+	
+	
 
 }
 
@@ -81,6 +92,9 @@ function processJSON(json_obj){
     _.each(json_obj, function(obj){
     	if(obj.location){     // import the events that has a location
     		if(obj.location.latitude && (obj.location.latitude != "0.000000")){
+    			var imageuri = getImageUri(obj);
+    			var imageext = getImageExtension(imageuri);
+    			//var imageblob = getPicture(imageuri, obj.nid);  // TODO find the best way to load the images
 				_.each(obj.translations.data, function(node){
 					newevent = Alloy.createModel("Arrangement",{
 						id: null,
@@ -93,7 +107,8 @@ function processJSON(json_obj){
 	    				latitude: obj.locations[0].latitude,
 	    				longitude: obj.locations[0].longitude,
 	    				distance: 0,
-    					imageuri: getImageUri(obj),	
+    					imageuri: imageuri,
+    					imageextension : imageext,
 	    				image: null  // TODO need to figure out how to best load these, maybe loaded and added when first displayed?
     				});
     				
@@ -120,6 +135,51 @@ function processJSON(json_obj){
     	arrangementer.cleanUpAndSync(json_obj.info.nids);
     }
 }
+
+function getImageUri(obj){
+	var image_uri = "";
+	if(obj.images){
+		if(obj.images.length > 0){
+			image_uri = obj.images[0].thumbnail;
+		}
+	}
+	//Ti.API.info("imageuri: " + image_uri);
+	return image_uri;
+}
+
+var getImageExtension = function (url){
+	if(url != ""){
+		//http://os2turist.bellcom.dk/sites/default/files/styles/app_thumbnail/public/Fiskeri%20og%20strandsjovSobadet1VM.jpg?itok=gzb2OXHV
+		var arr1 = url.split('/');
+		var ext = arr1[arr1.length-1].split('?')[0].split('.')[1];
+		//Ti.API.info("Extension: " + ext);
+		return ext;
+	}else{
+		return "";
+	}
+};
+
+var getPicture = function(url, nid) {
+	if(url != ""){
+		// Do we have network?
+		if(Ti.Network.online){
+			//Ti.API.info("Loading image from : " + url);
+			var xhr = Ti.Network.createHTTPClient();
+			xhr.setTimeout(10000);
+			xhr.open("GET", url);
+			xhr.onload = function() {
+				var b = xhr.getResponseData();
+				Ti.API.info("Blob length: " + nid + " : " + b.length);
+				return b; 				
+			};
+			xhr.onerror = function(){
+				//Ti.API.info("Error loading image: " + nid + " : " + this.error);
+			}; 
+			xhr.send();
+		}
+	}
+	return null;
+};
 
 function doTest(e){
 	var data = readLocalData();

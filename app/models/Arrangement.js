@@ -14,6 +14,7 @@ exports.definition = {
 		    "longitude": "text",
 		    "distance" : "integer",
 		    "imageuri": "text",
+		    "imageextension": "text",
 		    "image": "blob"
 		},
 		defaults: {
@@ -27,6 +28,7 @@ exports.definition = {
 			longitude: "",
 			distance: 0,
 			imageuri: "",
+			imageextension: "",
 			image: null
 		},
 		adapter: {
